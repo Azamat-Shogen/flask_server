@@ -22,8 +22,8 @@ docker commands:
 ##### 5) docker exec -it pg_container psql
 
 
-###Create database tube_tv
-####docker exec -i pg_container psql -c 'CREATE DATABASE tube_tv;'
+### Create database tube_tv
+#### docker exec -i pg_container psql -c 'CREATE DATABASE tube_tv;'
 
 Flask commands:
 ##### 1. flask db migrate
