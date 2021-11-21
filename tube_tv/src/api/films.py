@@ -1,7 +1,3 @@
-import hashlib
-from logging import error
-import secrets
-import requests
 import sqlalchemy
 from flask import Blueprint, json, jsonify, abort, request, make_response
 from ..models import User, Film, db
@@ -78,7 +74,7 @@ def update_film(film_id: int):
         if 'release_year' in request.json:
             film.release_year = request.json['release_year']
         if 'length' in request.json:
-            film.length = request.json['release_year']
+            film.length = request.json['length']
         if 'price' in request.json:
             film.price = request.json['price']
         if 'rating' in request.json:

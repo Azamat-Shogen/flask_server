@@ -28,10 +28,11 @@ def create_app(test_config=None):
     from .models import db
     db.init_app(app)
     migrate = Migrate(app, db)
-    
-    #TODO: register endpoints here
-    from .api import users, films
+
+    # TODO: register endpoints here
+    from .api import users, films, actors
     app.register_blueprint(users.bp)
     app.register_blueprint(films.bp)
+    app.register_blueprint(actors.bp)
 
     return app
