@@ -8,7 +8,7 @@ Entities: User, Film, Genre, Actor.
 
 Activate your virtual environment ( on Windows - example)
 
-####. venv/Scripts/activate 
+#### . venv/Scripts/activate 
 
 Install packages:
 #### python -m pip install -r requirements.txt
