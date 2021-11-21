@@ -1,7 +1,13 @@
 ## Flask server demo (tube_tv)
 
+##### Title: Tube_tv
+##### Description: tube_tv or netflix clone.
+Entities: User, Film, Genre, Actor.
+
+### Getting started
+
 Activate your virtual environment ( on Windows - example)
-####. /venv/Scripts/activate 
+####. venv/Scripts/activate 
 
 Install packages:
 #### python -m pip install -r requirements.txt
