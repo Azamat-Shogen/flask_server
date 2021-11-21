@@ -10,7 +10,7 @@ class User(db.Model):
     username = db.Column(db.String(128), unique=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(128), unique=True, nullable=True)
-    created_at = created_at = db.Column(
+    created_at = db.Column(
         db.DateTime,
         default=datetime.datetime.utcnow,
         nullable=False
@@ -23,15 +23,14 @@ class User(db.Model):
 
     def serialize(self):
         empty_list = []
-       
-        return {
-           'id': self.id,
-           'username': self.username,
-           'email': self.email,
-           'movies': empty_list,
-           'created_at': self.created_at
-        }
 
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'movies': empty_list,
+            'created_at': self.created_at
+        }
 
 
 class Film(db.Model):
@@ -51,7 +50,6 @@ class Film(db.Model):
         self.price = price
         self.rating = rating
 
-        
     def serialize(self):
         return {
             'id': self.id,
@@ -62,4 +60,3 @@ class Film(db.Model):
             'rating': self.rating,
             'date_added': self.date_added.isoformat()
         }
-    
