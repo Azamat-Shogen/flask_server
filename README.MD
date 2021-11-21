@@ -7,6 +7,7 @@ Entities: User, Film, Genre, Actor.
 ### Getting started
 
 Activate your virtual environment ( on Windows - example)
+
 ####. venv/Scripts/activate 
 
 Install packages:
@@ -14,11 +15,11 @@ Install packages:
 
 
 docker commands:
-#####1) docker compose up -d
-#####2) docker compose ps
-#####3) docker compose stop
-#####4) docker compose down (use carefully)
-#####5) docker exec -it pg_container psql
+##### 1) docker compose up -d
+##### 2) docker compose ps
+##### 3) docker compose stop
+##### 4) docker compose down (use carefully)
+##### 5) docker exec -it pg_container psql
 
 
 ###Create database tube_tv
