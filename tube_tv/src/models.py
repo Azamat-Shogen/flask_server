@@ -33,6 +33,22 @@ class User(db.Model):
         }
 
 
+film_actors = db.Table(
+    'film_actors',
+    db.Column(
+        'film_id', db.Integer,
+        db.ForeignKey('films.id'),
+        primary_key=True
+    ),
+
+    db.Column(
+        'actor_id', db.Integer,
+        db.ForeignKey('actors.id'),
+        primary_key=True
+    ),
+)
+
+
 class Film(db.Model):
     __tablename__ = 'films'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -42,6 +58,9 @@ class Film(db.Model):
     rating = db.Column(db.String(20), nullable=True)
     price = db.Column(db.Float, nullable=False, default=0.00)
     date_added = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
+    actors = db.relationship(
+        'Actor', secondary=film_actors,
+        backref="film", cascade="all,delete")
 
     def __init__(self, title: str, release_year: int, length: int, price=0.0, rating=None):
         self.title = title
@@ -51,6 +70,10 @@ class Film(db.Model):
         self.rating = rating
 
     def serialize(self):
+        empty_list = []
+        for actor in self.actors:
+            empty_list.append(actor.serialize())
+
         return {
             'id': self.id,
             'title': self.title,
@@ -58,7 +81,8 @@ class Film(db.Model):
             'length': self.length,
             'price': self.price,
             'rating': self.rating,
-            'date_added': self.date_added.isoformat()
+            'date_added': self.date_added.isoformat(),
+            'actors': empty_list
         }
 
 
@@ -67,16 +91,21 @@ class Actor(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.String(128), nullable=False)
     last_name = db.Column(db.String(128), nullable=False)
+    films = db.relationship('Film', secondary=film_actors, backref="actor", cascade="all,delete")
 
     def __init__(self, first_name, last_name):
         self.first_name = first_name
         self.last_name = last_name
 
     def serialize(self):
+        empty_list = []
+        for film in self.films:
+            empty_list.append({"title": film.title, "id": film.id})
         return {
             'id': self.id,
             "first name": self.first_name,
-            "last name": self.last_name
+            "last name": self.last_name,
+            "movies": empty_list
         }
 
 
@@ -93,7 +122,6 @@ class Genre(db.Model):
             'id': self.id,
             "genre": self.genre
         }
-
 
 
 

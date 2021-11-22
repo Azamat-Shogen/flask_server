@@ -30,10 +30,11 @@ def create_app(test_config=None):
     migrate = Migrate(app, db)
 
     # TODO: register endpoints here
-    from .api import users, films, actors, genres
+    from .api import users, films, actors, genres, admin_apis
     app.register_blueprint(users.bp)
     app.register_blueprint(films.bp)
     app.register_blueprint(actors.bp)
     app.register_blueprint(genres.bp)
+    app.register_blueprint(admin_apis.bp)
 
     return app
