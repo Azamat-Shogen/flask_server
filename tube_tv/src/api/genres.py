@@ -32,7 +32,7 @@ def add_genre():
         db.session.commit()
         return jsonify(g.serialize())
     except:
-        return custom_error("Something went wrong", 404)
+        return custom_error("Something went wrong", 422)
 
 
 @bp.route('/<int:genre_id>', methods=['GET'])
