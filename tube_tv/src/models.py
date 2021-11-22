@@ -72,7 +72,7 @@ class Film(db.Model):
     def serialize(self):
         empty_list = []
         for actor in self.actors:
-            empty_list.append(actor.serialize())
+            empty_list.append({"id": actor.id, "first_name": actor.first_name, "last_name": actor.last_name})
 
         return {
             'id': self.id,
