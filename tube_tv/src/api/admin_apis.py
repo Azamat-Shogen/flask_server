@@ -13,7 +13,6 @@ def custom_error(message, status_code):
 # TODO: POST
 @bp.route('film-setup-actors', methods=['POST'])
 def add_actor_to_film():
-
     if "film_id" not in request.json:
         return custom_error("film_id is required", 400)
     if "actor_id" not in request.json:
@@ -22,14 +21,7 @@ def add_actor_to_film():
     film_id = request.json['film_id']
     actor_id = request.json['actor_id']
 
-
     try:
-        # film = Film.query.get_or_404(film_id)
-        # actor = Actor.query.get_or_404(actor_id)
-        #
-        # if not film or not actor:
-        #     return custom_error("shit", 400)
-
         stmt = sqlalchemy.insert(film_actors).values(film_id=film_id, actor_id=actor_id)
         db.session.execute(stmt)
         db.session.commit()
@@ -37,5 +29,20 @@ def add_actor_to_film():
     except:
         return custom_error("Something went wrong", 422)
 
+
 # TODO: DELETE
-# TODO: UPDATE
+@bp.route('film-setup-actors/<int:film_id>', methods=['DELETE'])
+def delete_film_actor(film_id: int):
+    if 'actor_id' not in request.json:
+        return custom_error("actor is required", 400)
+
+    try:
+        actor_id = request.json['actor_id']
+        stmt = sqlalchemy.delete(film_actors).where(film_actors.c.film_id == film_id) \
+            .where(film_actors.c.actor_id == actor_id)
+        db.session.execute(stmt)
+        db.session.commit()
+        return jsonify({"message": "actor removed from film"})
+    except:
+        return custom_error("something went wrong", 422)
+
