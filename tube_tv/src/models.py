@@ -45,7 +45,21 @@ film_actors = db.Table(
         'actor_id', db.Integer,
         db.ForeignKey('actors.id'),
         primary_key=True
+    )
+)
+
+film_genres = db.Table(
+    'film_genres',
+    db.Column(
+        'film_id', db.Integer,
+        db.ForeignKey('films.id'),
+        primary_key=True
     ),
+    db.Column(
+        'genre_id', db.Integer,
+        db.ForeignKey('genres.id'),
+        primary_key=True
+    )
 )
 
 
@@ -61,6 +75,9 @@ class Film(db.Model):
     actors = db.relationship(
         'Actor', secondary=film_actors,
         backref="film", cascade="all,delete")
+    genre = db.relationship(
+        'Genre', secondary=film_genres,
+        backref="film", cascade="all,delete")
 
     def __init__(self, title: str, release_year: int, length: int, price=0.0, rating=None):
         self.title = title
@@ -70,9 +87,11 @@ class Film(db.Model):
         self.rating = rating
 
     def serialize(self):
-        empty_list = []
+        actors_list = []
         for actor in self.actors:
-            empty_list.append({"id": actor.id, "first_name": actor.first_name, "last_name": actor.last_name})
+            actors_list.append({"id": actor.id, "first_name": actor.first_name, "last_name": actor.last_name})
+
+        genre_list = [{"id": g.id, "genre": g.genre} for g in self.genre]
 
         return {
             'id': self.id,
@@ -82,7 +101,8 @@ class Film(db.Model):
             'price': self.price,
             'rating': self.rating,
             'date_added': self.date_added.isoformat(),
-            'actors': empty_list
+            'actors': actors_list,
+            "genre": genre_list
         }
 
 
