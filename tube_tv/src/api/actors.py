@@ -13,8 +13,6 @@ def custom_error(message, status_code):
 @bp.route('', methods=['GET'])
 def get_actors():
     actors = Actor.query.all()
-
-    print("actors:  ", actors[0].films)
     result = [actor.serialize() for actor in actors]
     return jsonify(result)
 

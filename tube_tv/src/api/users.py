@@ -1,10 +1,11 @@
 import hashlib
 from logging import error
 import secrets
+import datetime
 import requests
 import sqlalchemy
 from flask import Blueprint, jsonify, abort, request, make_response
-from ..models import User, db
+from ..models import User, Film, purchases, db
 from flask import Blueprint
 
 bp = Blueprint('users', __name__, url_prefix='/users')
@@ -124,3 +125,38 @@ def update_user(id: int):
         return jsonify(True)
     except:
         return jsonify(False)
+
+
+# TODO: Purchase film
+@bp.route('/<int:user_id>/purchase', methods=['POST'])
+def purchase_film(user_id: int):
+    if 'film_id' not in request.json:
+        return custom_error('film_id is required', 400)
+    try:
+        user = User.query.get_or_404(user_id)
+        film_id = request.json['film_id']
+        film = Film.query.get_or_404(film_id)
+        stmt = sqlalchemy.insert(purchases).values(user_id=user_id, film_id=film_id)
+        db.session.execute(stmt)
+        db.session.commit()
+        return jsonify(True)
+    except:
+        return custom_error("Something went wrong", 422)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
