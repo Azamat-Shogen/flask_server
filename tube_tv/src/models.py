@@ -4,6 +4,15 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
+# Todo: purchases
+purchases = db.Table(
+    'purchases',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('film_id', db.Integer, db.ForeignKey('films.id'), primary_key=True),
+    db.Column('purchase_date', db.DateTime, default=datetime.datetime.utcnow, nullable=False)
+)
+
+
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -15,6 +24,9 @@ class User(db.Model):
         default=datetime.datetime.utcnow,
         nullable=False
     )
+    purchases = db.relationship(
+        'Film', secondary=purchases, backref="user", cascade="all,delete"
+    )
 
     def __init__(self, username: str, password: str, email=None):
         self.username = username
@@ -22,13 +34,13 @@ class User(db.Model):
         self.email = email
 
     def serialize(self):
-        empty_list = []
+        movies_list = [{'film_id': film.id, "title": film.title} for film in self.purchases]
 
         return {
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'movies': empty_list,
+            'movies': movies_list,
             'created_at': self.created_at
         }
 
