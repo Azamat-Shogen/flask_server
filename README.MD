@@ -25,6 +25,13 @@ docker commands:
 ### Create database tube_tv
 #### docker exec -i pg_container psql -c 'CREATE DATABASE tube_tv;'
 
+### Generate and insert data into tables ( optional). Run: 
+ python seed.py
+ 
+ 
+### Once the seed.py is ran: 
+uncomment a few lines in models.py to make the created_at prop as default for User model
+
 Flask commands:
 ##### 1. flask db migrate
 ##### 2. flask db upgrade 
