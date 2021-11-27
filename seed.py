@@ -6,12 +6,42 @@ import random
 import string
 import hashlib
 import secrets
+import requests
+import random
 from faker import Faker
 from tube_tv.src.models import User, Film, Actor, Genre, purchases, film_actors, film_genres, db
 from tube_tv.src import create_app
 
-USER_COUNT = 30
-FILM_COUNT = 90
+
+def fetch_api(api):
+    try:
+        data = requests.get(api)
+    except:
+        print('was not able to fetch the data')
+        return {}
+    else:
+        return data.json()['contents']
+
+
+fetched_data = fetch_api('https://tubitv.com/oz/containers')
+arr = [fetched_data[el] for el in fetched_data]
+
+
+#movies_list = list(map(lambda x: {"title": x['title'], 'release_year': x['year']}, arr))
+
+movies_list = list(map(lambda x: {
+    "title": x['title'],
+    'release_year': x['year'],
+    'length': random.randint(60, 151),
+    'rating': random.choice(['G', 'PG', None, 'PG-13', 'R', 'NC-17']),
+    'price': random.choice([0.0, 0.99, 4.99, 19.99, 6.99, 14.99, 11.99])
+}, arr))
+
+for el in movies_list:
+    print(el)
+
+USER_COUNT = 50
+FILM_COUNT = len(movies_list)
 
 
 def random_passhash():
@@ -63,6 +93,18 @@ def main():
 
     # TODO: fake data for 'films' table
     last_film = None # save last film
+    for el in movies_list:
+        last_film = Film(
+            title=el['title'],
+            release_year=el['release_year'],
+            length=el['length'],
+            rating=el['rating'],
+            price=el['price'],
+            date_added=str(fake.date())
+        )
+        db.session.add(last_film)
+    # insert film
+    db.session.commit()
 
 
 # run script

@@ -88,7 +88,9 @@ class Film(db.Model):
     length = db.Column(db.Integer, nullable=False)
     rating = db.Column(db.String(20), nullable=True)
     price = db.Column(db.Float, nullable=False, default=0.00)
-    date_added = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
+    # TODO: uncomment this and comment out the second line after running seed.py
+    date_added = db.Column(db.DateTime, nullable=False)
+    # date_added = db.Column(db.DateTime, default=datetime.datetime.utcnow, nullable=False)
     actors = db.relationship(
         'Actor', secondary=film_actors,
         backref="film", cascade="all,delete")
@@ -96,11 +98,15 @@ class Film(db.Model):
         'Genre', secondary=film_genres,
         backref="film", cascade="all,delete")
 
-    def __init__(self, title: str, release_year: int, length: int, price=0.0, rating=None):
+    # TODO: uncomment this and comment out the second line after running seed.py
+    # def __init__(self, title: str, release_year: int, length: int, price=0.0, rating=None):
+    def __init__(self, title: str, release_year: int, length: int, date_added, price=0.0, rating=None):
         self.title = title
         self.release_year = release_year
         self.length = length
         self.price = price
+        # TODO: comment out this line below after running seed.py
+        self.date_added = date_added
         self.rating = rating
 
     def serialize(self):
