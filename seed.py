@@ -24,8 +24,7 @@ def fetch_api(api):
 
 
 fetched_data = fetch_api('https://tubitv.com/oz/containers')
-arr = [fetched_data[el] for el in fetched_data]
-
+arr = [fetched_data[el] for el in fetched_data][0:300]  # get the first 300 movies
 
 movies_list = list(map(lambda x: {
     "title": x['title'],
@@ -34,9 +33,6 @@ movies_list = list(map(lambda x: {
     'rating': random.choice(['G', 'PG', None, 'PG-13', 'R', 'NC-17']),
     'price': random.choice([0.0, 0.99, 4.99, 19.99, 6.99, 14.99, 11.99])
 }, arr))
-
-for el in movies_list:
-    print(el)
 
 USER_COUNT = 50
 FILM_COUNT = len(movies_list)
@@ -91,7 +87,7 @@ def main():
     db.session.commit()
 
     # TODO: fake data for 'films' table
-    last_film = None # save last film
+    last_film = None  # save last film
     for el in movies_list:
         last_film = Film(
             title=el['title'],
@@ -119,8 +115,8 @@ def main():
 
     # TODO: fake data for 'genres' table
     genre_list = ["Comedy", "Action", "Cartoon", "Horror", "History",
-                  "Thriller", "Drama","Mystery", "Fantasy", "Western"]
-    last_genre = None # save last genre
+                  "Thriller", "Drama", "Mystery", "Fantasy", "Western"]
+    last_genre = None  # save last genre
     for g in genre_list:
         last_genre = Genre(
             genre=g
@@ -129,30 +125,26 @@ def main():
         db.session.add(last_genre)
     db.session.commit()
 
+    # TODO: assign genres to films (1 - 3 genres per film)
+    films = Film.query.all()
+    genres = Genre.query.all()
+    film_ids = [f.serialize()['id'] for f in films]
+    genre_ids = [g.serialize()['id'] for g in genres]
+
+    film_genres_pairs = set()
+    for f_id in film_ids:
+        rand_int = random.randint(1, 2)
+        for i in range(rand_int):
+            candidate = (f_id, random.choice(genre_ids))
+            if candidate in film_genres_pairs:
+                continue
+            film_genres_pairs.add(candidate)
+
+    new_film_genre_list = [{'film_id': pair[0], 'genre_id': pair[1]} for pair in list(film_genres_pairs)]
+    insert_film_genres_query = film_genres.insert().values(new_film_genre_list)
+    db.session.execute(insert_film_genres_query)
+    db.session.commit()
+
 
 # run script
 main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
