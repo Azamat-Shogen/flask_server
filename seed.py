@@ -27,8 +27,6 @@ fetched_data = fetch_api('https://tubitv.com/oz/containers')
 arr = [fetched_data[el] for el in fetched_data]
 
 
-#movies_list = list(map(lambda x: {"title": x['title'], 'release_year': x['year']}, arr))
-
 movies_list = list(map(lambda x: {
     "title": x['title'],
     'release_year': x['year'],
@@ -42,6 +40,7 @@ for el in movies_list:
 
 USER_COUNT = 50
 FILM_COUNT = len(movies_list)
+ACTOR_COUNT = 100
 
 
 def random_passhash():
@@ -102,8 +101,32 @@ def main():
             price=el['price'],
             date_added=str(fake.date())
         )
+        # insert film
         db.session.add(last_film)
-    # insert film
+    db.session.commit()
+
+    # TODO: fake data for 'actors' table
+    last_actor = None  # save last actor
+    for _ in range(ACTOR_COUNT):
+        last_actor = Actor(
+            first_name=fake.first_name(),
+            last_name=fake.last_name()
+        )
+        # insert actor
+        db.session.add(last_actor)
+
+    db.session.commit()
+
+    # TODO: fake data for 'genres' table
+    genre_list = ["Comedy", "Action", "Cartoon", "Horror", "History",
+                  "Thriller", "Drama","Mystery", "Fantasy", "Western"]
+    last_genre = None # save last genre
+    for g in genre_list:
+        last_genre = Genre(
+            genre=g
+        )
+        # insert genre
+        db.session.add(last_genre)
     db.session.commit()
 
 
