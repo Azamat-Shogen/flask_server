@@ -10,7 +10,8 @@ from faker import Faker
 from tube_tv.src.models import User, Film, Actor, Genre, purchases, film_actors, film_genres, db
 from tube_tv.src import create_app
 
-USER_COUNT = 50
+USER_COUNT = 30
+FILM_COUNT = 90
 
 
 def random_passhash():
@@ -45,6 +46,7 @@ def main():
     truncate_tables()
     fake = Faker()
 
+    # TODO: fake data fo 'users' table
     last_user = None  # save last user
     for _ in range(USER_COUNT):
         last_user = User(
@@ -59,6 +61,33 @@ def main():
     # insert users
     db.session.commit()
 
+    # TODO: fake data for 'films' table
+    last_film = None # save last film
+
 
 # run script
 main()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
