@@ -21,17 +21,22 @@ class User(db.Model):
     email = db.Column(db.String(128), unique=True, nullable=True)
     created_at = db.Column(
         db.DateTime,
-        default=datetime.datetime.utcnow,
+        # TODO: uncomment this line after running: seed.py
+        # default=datetime.date.today(),
         nullable=False
     )
     purchases = db.relationship(
         'Film', secondary=purchases, backref="user", cascade="all,delete"
     )
 
-    def __init__(self, username: str, password: str, email=None):
+    # TODO: uncomment this line and comment out the line that contains ('created_at')
+    # def __init__(self, username: str, password: str, email=None,):
+    def __init__(self, username: str, password: str, created_at, email=None,):
         self.username = username
         self.password = password
         self.email = email
+        # TODO: comment this out after running: seed.py
+        self.created_at = created_at
 
     def serialize(self):
         movies_list = [{'film_id': film.id, "title": film.title} for film in self.purchases]
