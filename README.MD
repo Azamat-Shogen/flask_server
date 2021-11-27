@@ -30,7 +30,7 @@ docker commands:
  
  
 ### Once the seed.py is ran: 
-uncomment a few lines in models.py to make the created_at prop as default for User model
+some lines need to be commented out or uncommented in models.py  to make the attributes related to date as default
 
 Flask commands:
 ##### 1. flask db migrate
