@@ -2,7 +2,6 @@
 Populate twitter database with fake data using the SQLAlchemy ORM.
 """
 import datetime
-import random
 import string
 import hashlib
 import secrets
@@ -13,6 +12,7 @@ from tube_tv.src.models import User, Film, Actor, Genre, purchases, film_actors,
 from tube_tv.src import create_app
 
 
+# TODO: Fetch a movie api
 def fetch_api(api):
     try:
         data = requests.get(api)
@@ -125,16 +125,18 @@ def main():
         db.session.add(last_genre)
     db.session.commit()
 
-    # TODO: assign genres to films (1 - 3 genres per film)
     films = Film.query.all()
     genres = Genre.query.all()
+    actors = Actor.query.all()
+    actors_ids = [a.serialize()['id'] for a in actors]
     film_ids = [f.serialize()['id'] for f in films]
     genre_ids = [g.serialize()['id'] for g in genres]
 
+    # TODO: assign genres to films (1 - 2 genres per film)
     film_genres_pairs = set()
     for f_id in film_ids:
         rand_int = random.randint(1, 2)
-        for i in range(rand_int):
+        for _ in range(rand_int):
             candidate = (f_id, random.choice(genre_ids))
             if candidate in film_genres_pairs:
                 continue
@@ -143,6 +145,21 @@ def main():
     new_film_genre_list = [{'film_id': pair[0], 'genre_id': pair[1]} for pair in list(film_genres_pairs)]
     insert_film_genres_query = film_genres.insert().values(new_film_genre_list)
     db.session.execute(insert_film_genres_query)
+    db.session.commit()
+
+    # TODO: assign actors to films (2 - 5 actors per film)
+    film_actors_pairs = set()
+    for f_id in film_ids:
+        rand_int = random.randint(2, 5)
+        for _ in range(rand_int):
+            candidate = (f_id, random.choice(actors_ids))
+            if candidate in film_actors_pairs:
+                continue
+            film_actors_pairs.add(candidate)
+
+    new_film_actors_list = [{'film_id': pair[0], 'actor_id': pair[1]} for pair in list(film_actors_pairs)]
+    insert_film_actors_query = film_actors.insert().values(new_film_actors_list)
+    db.session.execute(insert_film_actors_query)
     db.session.commit()
 
 
