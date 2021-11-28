@@ -126,9 +126,11 @@ def main():
     db.session.commit()
 
     films = Film.query.all()
+    users = User.query.all()
     genres = Genre.query.all()
     actors = Actor.query.all()
     actors_ids = [a.serialize()['id'] for a in actors]
+    users_ids = [u.serialize()['id'] for u in users]
     film_ids = [f.serialize()['id'] for f in films]
     genre_ids = [g.serialize()['id'] for g in genres]
 
@@ -160,6 +162,26 @@ def main():
     new_film_actors_list = [{'film_id': pair[0], 'actor_id': pair[1]} for pair in list(film_actors_pairs)]
     insert_film_actors_query = film_actors.insert().values(new_film_actors_list)
     db.session.execute(insert_film_actors_query)
+    db.session.commit()
+
+    # TODO: purchases (1 - 10 movies per user)
+    user_purchases_pairs = set()
+    for u_id in random.sample(users_ids, 35):
+        rand_int = random.randint(1, 10)
+        film_ids_copies = film_ids.copy()
+        for _ in range(rand_int):
+            fake_date = fake.date_this_year()
+            film_id_to_insert = random.choice(film_ids_copies)
+            candidate = (u_id, film_id_to_insert, str(fake_date))
+            if candidate in user_purchases_pairs:
+                continue
+            user_purchases_pairs.add(candidate)
+            film_ids_copies.remove(film_id_to_insert)
+
+    new_purchases_list = [{'user_id': pair[0], 'film_id': pair[1], 'purchase_date': pair[2]}
+                          for pair in user_purchases_pairs]
+    insert_purchases_query = purchases.insert().values(new_purchases_list)
+    db.session.execute(insert_purchases_query)
     db.session.commit()
 
 
